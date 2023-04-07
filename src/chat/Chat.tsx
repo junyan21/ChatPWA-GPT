@@ -99,8 +99,14 @@ const Chat: React.FC = () => {
             </MessagesContainer>
             {error && <ErrorMessage>{error}</ErrorMessage>}
             <InputContainer>
-                <Input value={inputValue} onChange={handleInputChange} onKeyDown={handleKeyDown} placeholder="メッセージを入力してください..." />
-                <Button onClick={handleSendMessage}>送信</Button>
+                <Input
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
+                    placeholder="メッセージを入力してください..."
+                    disabled={loading} // ここを追加
+                />
+                <Button onClick={handleSendMessage} disabled={loading}>送信</Button>
             </InputContainer>
         </Container>
     );
