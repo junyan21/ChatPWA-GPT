@@ -6,8 +6,7 @@ export const Container = styled.div`
   flex-direction: column;
   width: 100%;
   max-width: 800px;
-  height: 100%;
-  max-height: 800px;
+  height: 100vh;
   background-color: #f5f5f5;
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
@@ -27,12 +26,14 @@ export const MessagesContainer = styled.div`
   overflow-y: auto;
   padding: 1rem;
 `;
+
 export const InputContainer = styled.div`
   display: flex;
   padding: 1rem;
   border-top: 1px solid #ddd;
   background-color: #fff;
 `;
+
 
 export const Input = styled.textarea`
   flex: 1;
