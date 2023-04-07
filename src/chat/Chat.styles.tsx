@@ -20,8 +20,17 @@ export const MessagesContainer = styled.div`
 
 export const InputContainer = styled.div`
   display: flex;
-  border-top: 1px solid #ccc;
-  padding: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border-top: 1px solid #ddd;
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 1000;
 `;
 
 export const Input = styled.textarea`
