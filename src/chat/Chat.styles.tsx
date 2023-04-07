@@ -1,5 +1,5 @@
 // src/Chat.styles.tsx
-import styled from '@emotion/styled';
+import styled from "@emotion/styled";
 
 export const Container = styled.div`
   display: flex;
@@ -12,6 +12,12 @@ export const Container = styled.div`
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   overflow: hidden;
+  margin: 0 auto;
+
+  @media (max-width: 1024px) {
+    max-width: 100%;
+    border-radius: 0;
+  }
 `;
 
 export const MessagesContainer = styled.div`
@@ -21,7 +27,6 @@ export const MessagesContainer = styled.div`
   overflow-y: auto;
   padding: 1rem;
 `;
-
 export const InputContainer = styled.div`
   display: flex;
   padding: 1rem;
@@ -62,18 +67,25 @@ export const MessageWrapper = styled.div<{ isUser: boolean }>`
   margin-bottom: 1rem;
 `;
 
-export const UserMessage = styled.div`
-  background-color: #007bff;
-  color: #fff;
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
+const MessageBase = styled.div`
+  max-width: 70%;
+  padding: 8px 12px;
+  border-radius: 15px;
+  margin-bottom: 4px;
 `;
 
-export const AIMessage = styled.div`
+export const UserMessage = styled(MessageBase)`
+  background-color: #007bff;
+  color: #fff;
+  align-self: flex-end;
+  border-bottom-right-radius: 0;
+`;
+
+export const AIMessage = styled(MessageBase)`
   background-color: #e0e0e0;
   color: #333;
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
+  align-self: flex-start;
+  border-bottom-left-radius: 0;
 `;
 
 export const ErrorMessage = styled.div`
