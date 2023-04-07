@@ -10,6 +10,8 @@ import {
     UserMessage,
     AIMessage,
     ErrorMessage,
+    SpinnerContainer,
+    Spinner
 } from './Chat.styles';
 
 type Message = { content: string; role: string };
@@ -40,6 +42,8 @@ const Chat: React.FC = () => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [error, setError] = useState<string | null>(null);
 
+    const [loading, setLoading] = useState<boolean>(false);
+
     const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setInputValue(event.target.value);
     };
@@ -57,6 +61,8 @@ const Chat: React.FC = () => {
         const userMessage: Message = { role: 'user', content: inputValue };
         setMessages((prevMessages) => [...prevMessages, userMessage]);
 
+        setLoading(true); // 通信開始前にローディング状態を true に設定
+
         try {
             const response = await openAIChat([...messages, userMessage]);
             const aiMessage: Message = { role: 'assistant', content: response };
@@ -67,6 +73,8 @@ const Chat: React.FC = () => {
             console.log(error);
             setError('メッセージの送信中にエラーが発生しました。');
         }
+
+        setLoading(false); // 通信終了後にローディング状態を false に設定
 
         setInputValue('');
     };
@@ -83,6 +91,11 @@ const Chat: React.FC = () => {
                         )}
                     </MessageWrapper>
                 ))}
+                {loading && (
+                    <SpinnerContainer>
+                        <Spinner />
+                    </SpinnerContainer>
+                )}
             </MessagesContainer>
             {error && <ErrorMessage>{error}</ErrorMessage>}
             <InputContainer>
