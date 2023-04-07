@@ -1,29 +1,35 @@
-// src/Chat.tsx
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Container, MessagesContainer, InputContainer, Input, Button, MessageWrapper, UserMessage, AIMessage, ErrorMessage } from './Chat.styles';
+import {
+    Container,
+    MessagesContainer,
+    InputContainer,
+    Input,
+    Button,
+    MessageWrapper,
+    UserMessage,
+    AIMessage,
+    ErrorMessage,
+} from './Chat.styles';
 
-type Message = { message: string; sender: string }
+type Message = { content: string; role: string };
 
-const openAIChat = async (message: string) => {
-    const API_KEY = process.env.REACT_APP_OPENAI_API_KEY //'your-openai-api-key';
+const openAIChat = async (messages: Message[]) => {
+    const API_KEY = process.env.REACT_APP_OPENAI_API_KEY; //'your-openai-api-key';
 
     const instance = axios.create({
         baseURL: 'https://api.openai.com',
         headers: {
-            'Authorization': `Bearer ${API_KEY}`,
+            Authorization: `Bearer ${API_KEY}`,
             'Content-Type': 'application/json',
         },
     });
 
-    const response = await instance.post('/v1/chat/completions', { // エンドポイントを変更
+    const response = await instance.post('/v1/chat/completions', {
         model: 'gpt-3.5-turbo',
-        messages: [
-            { role: "system", content: "You are a helpful assistant." },
-            { role: "user", content: message }
-        ],
+        messages: [{ role: 'system', content: 'You are a helpful assistant.' }, ...messages],
         temperature: 0.8,
-        max_tokens: 50,
+        // max_tokens: 50,
     });
 
     return response.data.choices[0].message.content.trim();
@@ -48,17 +54,17 @@ const Chat: React.FC = () => {
     const handleSendMessage = async () => {
         if (!inputValue.trim()) return;
 
-        const userMessage: Message = { sender: 'User', message: inputValue };
+        const userMessage: Message = { role: 'user', content: inputValue };
         setMessages((prevMessages) => [...prevMessages, userMessage]);
 
         try {
-            const response = await openAIChat(inputValue);
-            const aiMessage: Message = { sender: 'AI', message: response };
+            const response = await openAIChat([...messages, userMessage]);
+            const aiMessage: Message = { role: 'assistant', content: response };
             setMessages((prevMessages) => [...prevMessages, aiMessage]);
 
             setError(null);
         } catch (error) {
-            console.log(error)
+            console.log(error);
             setError('メッセージの送信中にエラーが発生しました。');
         }
 
@@ -69,23 +75,18 @@ const Chat: React.FC = () => {
         <Container>
             <MessagesContainer>
                 {messages.map((message, index) => (
-                    <MessageWrapper key={index} isUser={message.sender === 'User'}>
-                        {message.sender === 'User' ? (
-                            <UserMessage>{message.message}</UserMessage>
+                    <MessageWrapper key={index} isUser={message.role === 'user'}>
+                        {message.role === 'user' ? (
+                            <UserMessage>{message.content}</UserMessage>
                         ) : (
-                            <AIMessage>{message.message}</AIMessage>
+                            <AIMessage>{message.content}</AIMessage>
                         )}
                     </MessageWrapper>
                 ))}
             </MessagesContainer>
             {error && <ErrorMessage>{error}</ErrorMessage>}
             <InputContainer>
-                <Input
-                    value={inputValue}
-                    onChange={handleInputChange}
-                    onKeyDown={handleKeyDown}
-                    placeholder="メッセージを入力してください..."
-                />
+                <Input value={inputValue} onChange={handleInputChange} onKeyDown={handleKeyDown} placeholder="メッセージを入力してください..." />
                 <Button onClick={handleSendMessage}>送信</Button>
             </InputContainer>
         </Container>
